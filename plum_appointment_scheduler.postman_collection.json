@@ -1,0 +1,223 @@
+{
+  "info": {
+    "_postman_id": "plum-appointment-scheduler-v1",
+    "name": "Plum AI-Powered Appointment Scheduler",
+    "description": "API collection for Problem Statement 1: AI-Powered Appointment Scheduler Assistant.\nCovers OCR extraction, entity extraction, Asia/Kolkata normalization, ambiguity guardrails, and final appointment JSON synthesis.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Step 1: Extract Text (Typed)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Book dentist next Friday at 3pm\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/extract-text",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "extract-text"]
+        }
+      }
+    },
+    {
+      "name": "Step 1: Extract Text (Noisy OCR Sample)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"book dentist nxt Friday @ 3 pm\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/extract-text",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "extract-text"]
+        }
+      }
+    },
+    {
+      "name": "Step 1: Extract Text (Image Upload)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "sample_inputs/clean_appointment_note.png"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/extract-text",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "extract-text"]
+        }
+      }
+    },
+    {
+      "name": "Step 2: Extract Entities",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"raw_text\": \"Book dentist next Friday at 3pm\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/extract-entities",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "extract-entities"]
+        }
+      }
+    },
+    {
+      "name": "Step 3: Normalize to Asia/Kolkata",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entities\": {\n    \"date_phrase\": \"next Friday\",\n    \"time_phrase\": \"3pm\",\n    \"department\": \"dentist\"\n  },\n  \"reference_date\": \"2025-09-19\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/normalize",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "normalize"]
+        }
+      }
+    },
+    {
+      "name": "Step 3: Guardrail Ambiguity Trigger",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entities\": {\n    \"date_phrase\": \"sometime next week\",\n    \"time_phrase\": null,\n    \"department\": \"dentist\"\n  },\n  \"reference_date\": \"2025-09-19\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/normalize",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "normalize"]
+        }
+      }
+    },
+    {
+      "name": "Step 4: Finalize Appointment Record",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"department\": \"dentist\",\n  \"date\": \"2025-09-26\",\n  \"time\": \"15:00\",\n  \"tz\": \"Asia/Kolkata\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/finalize",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "finalize"]
+        }
+      }
+    },
+    {
+      "name": "End-to-End: Book Appointment (Text)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Book dentist next Friday at 3pm\",\n  \"reference_date\": \"2025-09-19\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/appointment?include_stages=true",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "appointment"],
+          "query": [
+            { "key": "include_stages", "value": "true" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "End-to-End: Book Appointment (Image Upload)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "image",
+              "type": "file",
+              "src": "sample_inputs/clean_appointment_note.png"
+            },
+            {
+              "key": "reference_date",
+              "value": "2025-09-19",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/appointment",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "appointment"]
+        }
+      }
+    },
+    {
+      "name": "End-to-End: Guardrail Ambiguity Trigger",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Book doctor appointment sometime next week\",\n  \"reference_date\": \"2025-09-19\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/appointment",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "appointment"]
+        }
+      }
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}
