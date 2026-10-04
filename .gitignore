@@ -44,3 +44,7 @@ htmlcov/
 .idea/
 .vscode/
 *.swp
+
+# Binaries
+cloudflared.exe
+
