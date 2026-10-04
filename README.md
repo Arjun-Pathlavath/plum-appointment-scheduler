@@ -358,12 +358,20 @@ Ngrok will output a public HTTPS URL (e.g., `https://xxxx.ngrok-free.app`) that 
 
 ---
 
-## 🎥 Screen Recording Walkthrough Guide
+## 🎥 Screen Recording Walkthrough
 
-To record the 2-minute demo video:
-1. **Show the Web UI**: Open `http://127.0.0.1:8000/` in your browser.
-2. **Execute Clean Request**: Click **Sample 1** ("Book dentist next Friday at 3pm") &rarr; Click **Execute AI Pipeline** &rarr; Show confirmed Dentistry booking with ISO date `2025-09-26`, `15:00`, `Asia/Kolkata`.
-3. **Execute Noisy Request**: Click **Sample 2** ("book dentist nxt Friday @ 3 pm") &rarr; Show OCR cleaning `nxt` &rarr; `next` and `@` &rarr; `at`.
-4. **Demonstrate Guardrail**: Click **Sample 4** ("Book doctor appointment sometime next week") &rarr; Show `status: needs_clarification`.
-5. **Demonstrate Image Upload**: Switch to **Document / Image (OCR)** tab &rarr; Select `sample_inputs/clean_appointment_note.png` &rarr; Execute pipeline.
-6. **Show API Docs**: Navigate to `http://127.0.0.1:8000/docs` to demonstrate Swagger UI.
+An automated HD screen recording demo is included directly in this repository:
+- 🎬 **Video File:** [Download / View `demo_recording.mp4`](demo_recording.mp4)
+- 🖼️ **Animated Preview:**
+
+![Demo Preview](demo_preview.gif)
+
+### Demonstration Breakdown:
+1. **Interactive Web UI**: Overview of the Plum-branded appointment booking playground at `http://127.0.0.1:8000/`.
+2. **Clean Request Execution**: Submitting **Sample 1** (`Book dentist next Friday at 3pm`) &rarr; Confirmed Dentistry booking with ISO date `2025-09-26`, `15:00`, and `Asia/Kolkata` timezone.
+3. **Noisy OCR Typo Correction**: Submitting **Sample 2** (`book dentist nxt Friday @ 3 pm`) &rarr; Automatic typo correction (`nxt` &rarr; `next`, `@` &rarr; `at`).
+4. **Defensive Guardrail Trigger**: Submitting **Sample 4** (`Book doctor appointment sometime next week`) &rarr; Triggers defensive exit condition:  
+   `{"status": "needs_clarification", "message": "Ambiguous date/time or department"}`.
+5. **Specialist Consultations**: Submitting **Sample 3** (`Cardiology checkup tomorrow at 10:30am`) &rarr; Mapping to Cardiology taxonomy.
+6. **OpenAPI / Swagger Documentation**: Interactive inspection of all REST endpoints at `/docs`.
+

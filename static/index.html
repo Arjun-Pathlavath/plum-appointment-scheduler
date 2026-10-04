@@ -462,6 +462,28 @@
         alert('Copied appointment JSON to clipboard!');
       }
     }
+
+    // Auto-run support for recording / demonstration
+    window.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const auto = params.get('auto');
+      if (auto) {
+        if (auto === 'clean') {
+          setSample('clean');
+          await runPipeline();
+        } else if (auto === 'noisy') {
+          setSample('noisy');
+          await runPipeline();
+        } else if (auto === 'ambiguous') {
+          setSample('ambiguous_date');
+          await runPipeline();
+        } else if (auto === 'cardio') {
+          setSample('cardio');
+          await runPipeline();
+        }
+        window.__PIPELINE_DONE = true;
+      }
+    });
   </script>
 </body>
 </html>
